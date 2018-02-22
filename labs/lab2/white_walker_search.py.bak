@@ -1,0 +1,67 @@
+# Kevin Wilson syx009
+
+from functools import reduce
+import heapq
+import networkx as nx
+import sys
+
+class WhiteWalker:
+    def __init__(self, graph, pos):
+        self.graph = graph
+        self.pos = pos
+        
+    def search(self):
+        def sld_wall(n):
+            (x1, y1) = self.pos['The Wall']
+            (x2, y2) = self.pos[n]
+            
+            return ((x1 - x2) ** 2 + (y1 - y2) ** 2) ** 0.5
+        
+        frontier = []
+        heapq.heappush(frontier, (0, 'The Wall'))
+        unvisited = list(self.graph.nodes())
+        visited = []
+        path = []
+        prev_g = 0
+        prev_node = None
+        while True:
+            if len(unvisited) == 0:
+                return path
+            
+            curr = heapq.heappop(frontier)
+            
+            path.append(curr[1])
+            visited.append(curr[1])
+            unvisited.remove(curr[1])
+            if prev_node != None:
+                prev_g += self.graph.get_edge_data(prev_node[1], curr[1])['weight']
+            prev_node = curr
+            for n in self.graph[curr[1]]:
+                g = self.graph.get_edge_data(curr[1], n)['weight'] + prev_g
+                sub = self.graph.subgraph([x for x in unvisited])
+                mst = list(nx.algorithms.tree.minimum_spanning_edges(sub))
+                weights = []
+                for i in range(len(mst)):
+                    weights.append(mst[i][2]['weight'])
+                if len(weights) >= 2:
+                    h = reduce(lambda x, y: x + y, weights)
+                elif len(weights) == 1:
+                    h = weights[0]
+                else:
+                    h = 0;
+                nearest = sys.maxsize
+                for neighbor in self.graph[n]:
+                    dist = self.graph.get_edge_data(n, neighbor)['weight']
+                    if dist < nearest:
+                        nearest = dist
+                h += nearest
+                #h += sld_wall(n)
+                h += nx.algorithms.shortest_path_length(self.graph, n, 'The Wall', 'weight')
+                f = g + h
+                next_node = (f, n)
+                if n not in visited and n not in [el[1] for el in frontier]:
+                    heapq.heappush(frontier, next_node)
+                elif n in [el[1] for el in frontier] and f < [el[0] for el in frontier if n in el][0]:
+                    old = [el for el in frontier if n in el][0]
+                    frontier[frontier.index(old)] = next_node
+                    heapq.heapify(frontier)

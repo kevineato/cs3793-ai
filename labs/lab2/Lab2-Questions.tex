@@ -1,0 +1,39 @@
+\documentclass[12pt]{elsart}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+
+\begin{document}
+\begin{center}
+Lab 2 Questions \\
+Kevin Wilson \\
+syx009
+\end{center}
+  
+{\bf 1. (5 points) Which searching algorithm is optimal for the white-walker-search implemented in question I? (Name which algorithm you implemented) Explain your answer.}
+
+I used a depth-first-search that visited each of the nodes (cities) in the graph. It was optimal because the white walkers successfully visited each city to destroy it, and did minimal backtracking, only when there were no more nodes to be expanded on the current path. With breadth-first-search there would be constant backtracking due to the nature of breadth-first-search.
+
+{\bf 2. (5 points) What is the time complexity of white-walker-search implemented in question I? Show your work and express the answer in Big-O notation}
+
+Depth first search will be $O(b^m)$ in the worst case where $b =$ the maximum degree for a given city in the graph and $m =$ the maximum depth of the graph when nodes are expanded starting at The Wall.
+
+{\bf 3. (5 points) Which searching algorithm is optimal for the jon-snow-search implemented in question I? (Name which algorithm you implemented) Explain your answer.}
+
+I used A* search to get Jon Snow from Trader Town to The Wall in the most optimal way possible. I used a heuristic function that calculated the straight line distance from a given node to The Wall to guide the search. The path generated is optimal since the heuristic is admissible and consistent, so the solution must be optimal.
+
+{\bf 4. (5 points) What is the time complexity of jon-snow-search implemented in question I? Show your work and express the answer in Big-O notation}
+
+In worst case, A* will perform like breadth first search and be $O(b^d)$, but with a good heuristic like the one I used it will be bounded by $O((b*)^d)$ which is the effective branching factor since the heuristic function will guide the search toward the solution and thus skip unnecessary nodes from being expanded.
+
+{\bf BONUS}
+
+Jon Snow and the White Walkers would meet in Pentos in my search.
+
+\includegraphics[width=\linewidth]{map.png}
+
+\includegraphics[width=\linewidth]{ww.png}
+
+\includegraphics[width=\linewidth]{js.png}
+
+\end{document}
